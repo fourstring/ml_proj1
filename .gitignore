@@ -1,0 +1,8 @@
+.idea/
+.ipynb_checkpoints/
+/exp.ipynb
+/train.csv
+/splitter.ipynb
+/test.csv
+/Untitled.ipynb
+/valid.csv
