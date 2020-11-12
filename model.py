@@ -97,8 +97,7 @@ class AbstractNaiveBayesClassifier(AbstractClassifier, ABC):
 
     def preprocessing(self, data: pd.DataFrame) -> pd.DataFrame:
         labels = self.labeling(data)
-        normalized = self.normalization(data)
-        ret = pd.DataFrame(self.discretizer.fit_transform(normalized))
+        ret = pd.DataFrame(self.discretizer.fit_transform(data))
         ret['label'] = labels
         return ret
 
@@ -127,14 +126,12 @@ class AbstractNaiveBayesClassifier(AbstractClassifier, ABC):
     def predicate(self, data_vector: pd.Series, *args, **kwargs) -> Tuple[np.float64, int]:
         max_prob = np.float64(0.0)
         max_prob_class = -1
-        discretized_vec = pd.Series(self.discretizer.transform(data_vector.values.reshape(1, -1))[0],
-                                    index=data_vector.index)
         for c in self.classes:
             param = self.params[c]
             prob = np.float64(param.class_prob)
             features_prob = param.features_prob
             for column_name in features_prob.columns:
-                prob *= features_prob[column_name][int(discretized_vec[column_name])]
+                prob *= features_prob[column_name][int(data_vector[column_name])]
             if prob > max_prob:
                 max_prob = prob
                 max_prob_class = c
